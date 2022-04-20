@@ -1,7 +1,7 @@
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-#include "Defines.h"
+#include "Ex3_Defines.h"
 #include "Ex3_q1.h"
 #include "EX3_q2.h"
 
