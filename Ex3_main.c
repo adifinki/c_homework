@@ -1,14 +1,13 @@
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-#include "Ex3_Defines.h"
-#include "Ex3_q1.h"
-#include "EX3_q2.h"
+#include "Ex3_q1_318863693.h"
+#include "EX3_q2_318863693.h"
+#include "Ex3_q3_318863693.h"
+#include "Defines.h"
 
 
-// ADD OTHER INCLUDES IF NEEDED.
-
-/*___________________diclarations________________________*/
+/*___________________declarations________________________*/
 void Front_Page_Setter();
 int Input_Error_Handler(int Users_Option, int ret_value);
 
@@ -18,26 +17,27 @@ int Input_Error_Handler(int Users_Option, int ret_value);
 int main()
 {
 	int User_Option = DEFAULT;
-	int ret_value = DEFAULT;										//this variable will recieve the scanf or functions return value.
+	int ret_value = DEFAULT; //this variable will recieve the scanf or functions return value.
 
-	Front_Page_Setter();											//setting the screen for the user.
+	Front_Page_Setter();  //setting the screen for the user.
 	printf("Your choise is: ");
-	ret_value = scanf("%d", &User_Option);
-	getchar(); // the \n of the scan 							//getting the users option.
+	ret_value = scanf("%d", &User_Option); //getting the users option.
+	getchar(); // the \n of the scan
 	
 	switch (User_Option)
 	{
-	case FIRST_QUESTION:
-		ret_value = Input_Error_Handler(User_Option, Matrix_Multiplicator());                          //First Question.
-		break;
-	case SECOND_QUESTION:
-		ret_value = Input_Error_Handler(User_Option, Magic_Words_Creator());						//Second Question.
-		break;
-	case THIRD_QUESTION:
-		//ret_value = Small_Grep();									//Third Question.
-		break;
-	default:
-		break;
+		case FIRST_QUESTION:
+			ret_value = Input_Error_Handler(User_Option, Matrix_Multiplicator());                          //First Question.
+			break;
+		case SECOND_QUESTION:
+			ret_value = Input_Error_Handler(User_Option, Magic_Words_Creator());						//Second Question.
+			break;
+		case THIRD_QUESTION:
+			ret_value = Input_Error_Handler(User_Option, small_grep());									//Third Question.
+			break;
+		default:
+			ret_value = Input_Error_Handler(User_Option, EMPTY);
+			break;
 	}
 	if (ret_value == SUCCESS)
 		printf("Enjoy... :)\n");
@@ -82,10 +82,7 @@ int Input_Error_Handler(int Users_Option, int ret_value)
 				first_question_errors_handler(ret_value);
 				break;
 			case SECOND_QUESTION:
-				printf("You have intered an ilegal input.\n");
-				break;
 			case THIRD_QUESTION:
-				break;
 			default:																				//illegal input.
 				printf("You have intered an ilegal input.\n");
 				break;
