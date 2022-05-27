@@ -20,6 +20,9 @@
 #define DATE_VALUES 3
 #define STOP      "STOP\0"
 
+#define BIGGER 1
+#define SMALLER -1
+
 #define NAME 1
 #define DEPARTMENT 2
 #define DATE 3
