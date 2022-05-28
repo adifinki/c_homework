@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "Ex4_q2.h"
+#include "Ex4_q2_318863693.h"
 #include "defines.h"
 
 typedef struct {
@@ -27,7 +27,7 @@ void print_inventory(Item* store_items, int size);
 void swap_items(Item* one, Item* two);
 void expedition_sort(Item* store_items, int size);
 void price_sort(Item* store_items, int size);
-void inventory_update(Item** store_items, int* size);
+int inventory_update(Item** store_items, int* size);
 
 
 void get_date_from_str(int date[DATE_VALUES], char* str) {
@@ -171,10 +171,7 @@ void get_item_str(Item item, char* result) {
 	* @param item: item structer
 	* @param result: pointer to the formatted output
 	*/
-	int retval = 0;
-	retval =  sprintf(result, "%s"DELIMITER"%s"DELIMITER"%s"DELIMITER"%f"DELIMITER"%d\n", item.item_name, item.department, item.expiration_date, item.price, item.available);
-	if (retval < 0)
-		return FAIL;
+	sprintf(result, "%s"DELIMITER"%s"DELIMITER"%s"DELIMITER"%f"DELIMITER"%d\n", item.item_name, item.department, item.expiration_date, item.price, item.available);
 }
 
 void print_inventory(Item* store_items,int size) {
@@ -224,13 +221,15 @@ void expedition_sort(Item* store_items, int size) {
 	* @param store_items: array of item structers to print
 	* @param size: number of structers
 	*/
+	int smallest_index;
 	for (int i = 0; i < size - 1; ++i) {
-		Item* smallest = &store_items[i];
-		for (int j = i + 1; j < size; ++j) {
-			if (compare_dates(smallest->expiration_date, store_items[j].expiration_date) == BIGGER) {
-				swap_items(smallest, &store_items[j]);
-			}
-		}
+		smallest_index = i;
+		for (int j = i + 1; j < size; ++j)
+			if (compare_dates(store_items[smallest_index].expiration_date, store_items[j].expiration_date) == BIGGER)
+				smallest_index = j;
+		// swap everything until the smallest is the first.
+		for (int j = smallest_index; j > i; --j)
+			swap_items(&store_items[j], &store_items[j - 1]);
 	}
 }
 
@@ -240,20 +239,19 @@ void price_sort(Item* store_items, int size) {
 	* @param store_items: array of item structers to print
 	* @param size: number of structers
 	*/
-	Item* temp = (Item*)malloc(sizeof(temp));
-	if (temp == NULL)
-		return FAIL;
-	for (int i = 0; i < size; ++i) {
-		for (int j = 0; j < size; ++j) {
-			if (store_items[i].price < store_items[j].price) {
-				swap_items(&store_items[i], &store_items[j]);
-			}
-		}
+	int smallest_index;
+	for (int i = 0; i< size - 1 ; ++i) {
+		smallest_index = i;
+		for (int j = i + 1; j < size ; ++j)
+			if (store_items[smallest_index].price > store_items[j].price)
+				smallest_index = j;
+		// swap everything until the smallest is the first.
+		for (int j = smallest_index; j > i; --j)
+			swap_items(&store_items[j], &store_items[j-1]);
 	}
-	free(temp);
 }
 
-void inventory_update(Item** store_items, int* size) {
+int inventory_update(Item** store_items, int* size) {
 	/*
 	*deleting expired items from a store
 	* @param store_items: array of item structers to print
@@ -286,6 +284,7 @@ void inventory_update(Item** store_items, int* size) {
 	*store_items = new_store;
 	*size = count;
 	printf("You have successfully removed all of the expired items from the inventory.\n\n");
+	return SUCCESS;
 }
 
 int main(int argc, char* argv[]){
@@ -333,7 +332,7 @@ int main(int argc, char* argv[]){
 				printf("Thank you for visiting our store.\nHave a wonderful day.\n");
 				break;
 			case PRINT_PRODUCTS:
-				printf("You chose to print the products in the store option.\n\n");
+				printf("You chose to print the products in the store option.\n");
 				print_inventory(store_items, size);
 				break;
 			case SORT_BY_DATE:
@@ -348,13 +347,18 @@ int main(int argc, char* argv[]){
 				break;
 			case UPDATE:
 				printf("You chose to get rid of all expires items in the inventory.\n");
-				inventory_update(&store_items, &size);
+				res = inventory_update(&store_items, &size);
 				print_inventory(store_items, size);
 				break;
 			default:
 				printf("%s bad choise\n\n", choise);
 				break;
 			}
+			if (res == FAIL) {
+				printf("An Error Has Occure!\n");
+				break;
+			}
+
 		} while (atoi(choise) != STOP_PROGRAM);
 	}
 
